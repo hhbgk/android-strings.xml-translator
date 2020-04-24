@@ -1,0 +1,9 @@
+<resources>
+
+    <string name="en_us">Country</string>
+    <string name="zh_cn">国家</string>
+    <string name="zh_tw">國家</string>
+    <string name="de_de">Land</string>
+    <string name="fr_fr">Pays</string>
+
+</resources>
