@@ -28,9 +28,9 @@ from googletrans import Translator
 
 # LANGUAGE CODES FOR REFERENCE --> http://py-googletrans.readthedocs.io/en/latest/#googletrans-languages
 
-INFILE = input("Enter strings.xml file path")
-INPUTLANGUAGE = input("Enter input language, such as (en, tr)")
-OUTPUTLANGUAGE = input("Enter output language(s), such as: tr or (en, tr, it)")
+INFILE = raw_input("Enter strings.xml file path:")
+INPUTLANGUAGE = raw_input("Enter input language, such as (en, tr):")
+OUTPUTLANGUAGE = raw_input("Enter output language(s), such as: tr or (en, tr, it):")
 
 default_output_languages = ['ar', 'hy', 'az', 'be', 'bs', 'bg', 'ca', 'hr', 'cs', 'da', 'nl', 'et', 'tl', 'fi',
                             'fr', 'ka', 'de', 'el', 'iw', 'hi', 'hu', 'is', 'id', 'ga', 'it', 'ja', 'kk', 'ko', 'la',
@@ -53,9 +53,15 @@ def create_directories(dir_language):
 
 
 languages_to_translate = OUTPUTLANGUAGE.split(",")
+src_language_code = INPUTLANGUAGE.strip()
 
 if INFILE is None:
     INFILE = "strings.xml"
+
+if INPUTLANGUAGE:
+    print("src language code:" + src_language_code)
+else:
+    src_language_code = 'en'
 
 if OUTPUTLANGUAGE:
     if len(languages_to_translate) == 0:
@@ -63,12 +69,13 @@ if OUTPUTLANGUAGE:
 else:
     languages_to_translate = default_output_languages
 
-translator = Translator()
+#translator = Translator()
+translator = Translator(service_urls=['translate.google.cn'])
 for language_name in languages_to_translate:
     language_to_translate = language_name.strip()
 
     translated_file_directory = create_directories(language_to_translate)
-    print(" -> " + language_to_translate + " =========================")
+    print(src_language_code + " -> " + language_to_translate + " =========================")
 
     tree = ElementTree.parse(INFILE)
     root = tree.getroot()
@@ -78,7 +85,7 @@ for language_name in languages_to_translate:
             value = root[i].text
 
             if value is not None:
-                root[i].text = translator.translate(value, language_to_translate).text.title().strip()
+                root[i].text = translator.translate(value, language_to_translate, src_language_code).text
                 print(value + "-->" + root[i].text)
 
     translated_file = translated_file_directory + "/strings.xml"
